@@ -1,0 +1,166 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-mint: var(--mint);
+  --color-magenta: var(--magenta);
+  --color-violet: var(--violet);
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.08 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.12 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.1 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.92 0.27 145);
+  --primary-foreground: oklch(0.08 0 0);
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.18 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.65 0.31 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.22 0 0);
+  --input: oklch(0.22 0 0);
+  --ring: oklch(0.92 0.27 145);
+  --mint: #39FF14;
+  --magenta: #FF2D9B;
+  --violet: #7B2FFF;
+}
+
+.dark {
+  /* already dark by default */
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: #080808;
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+  .text-mint { color: #39FF14; }
+  .text-magenta { color: #FF2D9B; }
+  .text-violet { color: #7B2FFF; }
+  .bg-mint { background-color: #39FF14; }
+  .bg-magenta { background-color: #FF2D9B; }
+  .bg-violet { background-color: #7B2FFF; }
+  .border-mint { border-color: #39FF14; }
+
+  .neon-mint {
+    color: #39FF14;
+    text-shadow: 0 0 10px #39FF14, 0 0 24px #39FF14aa, 0 0 48px #39FF1455;
+  }
+  .neon-mint-soft {
+    color: #39FF14;
+    text-shadow: 0 0 8px #39FF1499, 0 0 18px #39FF1455;
+  }
+  .glow-box-mint {
+    box-shadow: 0 0 0 2px #39FF14, 0 0 24px #39FF1440;
+  }
+  .glow-box-mint-hover {
+    transition: box-shadow .3s ease, transform .3s ease, border-color .3s ease;
+  }
+  .glow-box-mint-hover:hover {
+    border-color: #39FF14;
+    box-shadow: 0 0 0 1px #39FF14, 0 0 24px #39FF1455;
+    transform: translateY(-4px);
+  }
+  .btn-neon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.75rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.14em;
+    color: #39FF14;
+    border: 1.5px solid #39FF14;
+    background: transparent;
+    border-radius: 2px;
+    text-transform: uppercase;
+    transition: all .25s ease;
+    box-shadow: 0 0 0 0 transparent, inset 0 0 0 0 transparent;
+  }
+  .btn-neon:hover {
+    background: #39FF14;
+    color: #080808;
+    box-shadow: 0 0 24px #39FF1499, 0 0 48px #39FF1455;
+  }
+  .btn-neon-pink {
+    color: #FF2D9B;
+    border-color: #FF2D9B;
+  }
+  .btn-neon-pink:hover {
+    background: #FF2D9B;
+    color: #080808;
+    box-shadow: 0 0 24px #FF2D9B99, 0 0 48px #FF2D9B55;
+  }
+
+  .radial-night {
+    background:
+      radial-gradient(ellipse at 50% 40%, #7B2FFF55 0%, #FF2D9B33 35%, transparent 70%),
+      #080808;
+  }
+  .radial-night-strong {
+    background:
+      radial-gradient(ellipse at 30% 30%, #7B2FFF66 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 70%, #FF2D9B55 0%, transparent 55%),
+      #080808;
+  }
+
+  @keyframes float-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: .6; }
+    50% { transform: translate(20px, -30px) scale(1.1); opacity: 1; }
+  }
+  .orb { animation: float-orb 9s ease-in-out infinite; }
+
+  @keyframes pulse-mint {
+    0%, 100% { text-shadow: 0 0 10px #39FF14, 0 0 24px #39FF14aa; }
+    50% { text-shadow: 0 0 16px #39FF14, 0 0 36px #39FF14, 0 0 60px #39FF1466; }
+  }
+  .pulse-mint { animation: pulse-mint 3.5s ease-in-out infinite; }
+}
