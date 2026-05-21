@@ -325,10 +325,17 @@ function Home() {
           transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}
           className="relative z-20 text-center px-6"
         >
-     <img
-  src={mintLogo}
-  alt="Mint Arena Logo"
-  className="w-auto h-auto max-w-full"/>
+    <Link to="/" className="flex items-center select-none shrink-0">
+          <img
+            src={mintLogo}
+            alt="Mint Arena — Cocktails · Malia"
+            className="h-auto md:h-auto max-w-full"
+            style={{
+              filter:
+                "brightness(1.35) saturate(1.4) drop-shadow(0 0 10px rgba(57,255,20,0.55)) drop-shadow(0 0 22px rgba(57,255,20,0.3))",
+            }}
+          />
+        </Link>
           <p className="mt-6 italic text-lg md:text-2xl text-white/85 font-body">{tr("hero_tagline")}</p>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
             <Link to="/menu" className="btn-neon">{tr("hero_explore")}</Link>
