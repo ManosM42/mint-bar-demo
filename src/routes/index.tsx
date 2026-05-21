@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/contexts/LanguageContext";
+import mintLogo from "@/assets/mint-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -324,10 +325,10 @@ function Home() {
           transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}
           className="relative z-20 text-center px-6"
         >
-          <h1 className="font-display leading-[0.85] tracking-tight" style={{ fontSize: "clamp(4rem, 16vw, 14rem)" }}>
-            <span className="neon-mint pulse-mint">MINT</span>{" "}
-            <span className="text-white">ARENA</span>
-          </h1>
+     <img
+  src={mintLogo}
+  alt="Mint Arena Logo"
+  className="w-auto h-auto max-w-full"/>
           <p className="mt-6 italic text-lg md:text-2xl text-white/85 font-body">{tr("hero_tagline")}</p>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
             <Link to="/menu" className="btn-neon">{tr("hero_explore")}</Link>
