@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import mintLogo from "@/assets/mint-logo.png";
 
@@ -25,18 +25,26 @@ import slide2 from "@/assets/slider-2.jpg";
 import slide3 from "@/assets/slider-3.jpg";
 import slide4 from "@/assets/slider-4.jpg";
 
-const slides = [slide1, slide2, slide3, slide4];
+const slides = [
+  { src: slide1, label: "Open-Air Terrace", sub: "Where the night begins" },
+  { src: slide2, label: "Craft Cocktails", sub: "Handcrafted every night" },
+  { src: slide3, label: "The Bar", sub: "100+ signature drinks" },
+  { src: slide4, label: "Malia Vibes", sub: "Crete's finest bar" },
+];
+
+const heroslides = [slide1, slide2, slide3, slide4];
 const FRAME_COUNT = 41;
 
 function padded(n: number) {
   return String(n).padStart(3, "0");
 }
 
+// ─── Simple Hero Slider ────────────────────────────────────────────────────
 function HeroSlider() {
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5000);
+    const t = setInterval(() => setIdx((i) => (i + 1) % heroslides.length), 5000);
     return () => clearInterval(t);
   }, []);
 
@@ -51,7 +59,7 @@ function HeroSlider() {
           transition={{ duration: 1.8, ease: "easeInOut" }}
           className="absolute inset-0"
         >
-          <img src={slides[idx]} alt="" className="w-full h-full object-cover" />
+          <img src={heroslides[idx]} alt="" className="w-full h-full object-cover" />
         </motion.div>
       </AnimatePresence>
       <div className="absolute inset-0 bg-black/55" />
@@ -60,7 +68,7 @@ function HeroSlider() {
         style={{ background: "radial-gradient(ellipse at 50% 60%, #7B2FFF22 0%, #FF2D9B18 40%, transparent 70%)" }}
       />
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-        {slides.map((_, i) => (
+        {heroslides.map((_, i) => (
           <button
             key={i}
             onClick={() => setIdx(i)}
@@ -78,6 +86,7 @@ function HeroSlider() {
   );
 }
 
+// ─── GSAP Frame Animation ──────────────────────────────────────────────────
 function FrameAnimation() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -166,13 +175,11 @@ function FrameAnimation() {
         text2Ref.current.style.transform = "translateX(-60px)";
       }
 
-      // Pin the WRAPPER (stable outer div React doesn't move)
-      // but use the inner container as the visual element
       stRef.current = ScrollTrigger.create({
         trigger: wrapper,
         start: "top top",
         end: "+=250%",
-        pin: container, // pin the INNER div, not the wrapper
+        pin: container,
         pinSpacing: true,
         scrub: 0.15,
         onUpdate: (self) => {
@@ -212,13 +219,11 @@ function FrameAnimation() {
     return () => {
       destroyed = true;
 
-      // Kill ScrollTrigger and revert pin BEFORE React unmounts
       if (stRef.current) {
         stRef.current.kill(true);
         stRef.current = null;
       }
 
-      // Manually put container back inside wrapper if GSAP moved it
       if (container && wrapper && container.parentNode !== wrapper) {
         try {
           wrapper.appendChild(container);
@@ -233,9 +238,7 @@ function FrameAnimation() {
   }, []);
 
   return (
-    // Outer wrapper — React owns this, never moved by GSAP
     <div ref={wrapperRef} style={{ height: "350vh", position: "relative" }}>
-      {/* Inner container — GSAP pins this */}
       <div
         ref={containerRef}
         className="relative w-full overflow-hidden bg-[#080808]"
@@ -305,6 +308,218 @@ function FrameAnimation() {
   );
 }
 
+// ─── 3D Gallery Slider ─────────────────────────────────────────────────────
+function ThreeDGallerySlider() {
+  const [current, setCurrent] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const N = slides.length;
+
+  const startAuto = useCallback(() => {
+    if (autoRef.current) clearInterval(autoRef.current);
+    autoRef.current = setInterval(() => {
+      setCurrent((i) => (i + 1) % N);
+    }, 5000);
+  }, [N]);
+
+  useEffect(() => {
+    startAuto();
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+  }, [startAuto]);
+
+  const goTo = (idx: number) => {
+    if (isAnimating || idx === current) return;
+    setIsAnimating(true);
+    setCurrent(idx);
+    startAuto();
+    setTimeout(() => setIsAnimating(false), 600);
+  };
+
+  const goNext = () => goTo((current + 1) % N);
+  const goPrev = () => goTo((current - 1 + N) % N);
+
+  const dragStartX = useRef<number | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => { dragStartX.current = e.clientX; };
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (dragStartX.current === null) return;
+    const dx = e.clientX - dragStartX.current;
+    if (dx < -50) goNext();
+    else if (dx > 50) goPrev();
+    dragStartX.current = null;
+  };
+
+  type CardStyle = {
+    transform: string;
+    opacity: number;
+    zIndex: number;
+    pointerEvents: "auto" | "none";
+    filter: string;
+  };
+
+  function getCardStyle(i: number): CardStyle {
+    const rel = ((i - current) % N + N) % N;
+    const positions: Record<number, CardStyle> = {
+      0: { transform: "translateX(0px) translateZ(0px) rotateY(0deg) scale(1)",         opacity: 1,    zIndex: 10, pointerEvents: "auto", filter: "brightness(1)" },
+      1: { transform: "translateX(210px) translateZ(-90px) rotateY(-18deg) scale(0.82)", opacity: 0.72, zIndex: 7,  pointerEvents: "auto", filter: "brightness(0.7)" },
+      2: { transform: "translateX(280px) translateZ(-170px) rotateY(-28deg) scale(0.64)", opacity: 0.38, zIndex: 4,  pointerEvents: "none", filter: "brightness(0.5)" },
+    };
+    const leftMap: Record<number, CardStyle> = {
+      [N - 1]: { transform: "translateX(-210px) translateZ(-90px) rotateY(18deg) scale(0.82)", opacity: 0.72, zIndex: 7,  pointerEvents: "auto", filter: "brightness(0.7)" },
+      [N - 2]: { transform: "translateX(-280px) translateZ(-170px) rotateY(28deg) scale(0.64)", opacity: 0.38, zIndex: 4,  pointerEvents: "none", filter: "brightness(0.5)" },
+    };
+    return positions[rel] ?? leftMap[rel] ?? { transform: "translateX(0) translateZ(-220px) scale(0.55)", opacity: 0, zIndex: 1, pointerEvents: "none", filter: "brightness(0.4)" };
+  }
+
+  return (
+    <div
+      className="relative flex flex-col items-center justify-center overflow-hidden"
+      style={{ perspective: "1100px", height: "360px" }}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+    >
+      {/* Ambient glow */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: "600px",
+          height: "300px",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "radial-gradient(ellipse, #39FF1412 0%, #7B2FFF10 50%, transparent 75%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      {/* Cards stage */}
+      <div
+        className="relative"
+        style={{
+          width: "360px",
+          height: "240px",
+          transformStyle: "preserve-3d",
+        }}
+      >
+        {slides.map((slide, i) => {
+          const s = getCardStyle(i);
+          const isActive = i === current;
+          const rel = ((i - current) % N + N) % N;
+
+          return (
+            <div
+              key={i}
+              onClick={() => {
+                if (rel === 1) goNext();
+                else if (rel === N - 1) goPrev();
+              }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "20px",
+                width: "320px",
+                height: "220px",
+                borderRadius: "16px",
+                overflow: "hidden",
+                transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
+                cursor: isActive ? "default" : "pointer",
+                transformStyle: "preserve-3d",
+                transform: s.transform,
+                opacity: s.opacity,
+                zIndex: s.zIndex,
+                pointerEvents: s.pointerEvents,
+                filter: s.filter,
+                border: isActive ? "1px solid rgba(57,255,20,0.3)" : "1px solid rgba(255,255,255,0.08)",
+                boxShadow: isActive ? "0 0 30px rgba(57,255,20,0.12), 0 20px 60px rgba(0,0,0,0.6)" : "0 10px 40px rgba(0,0,0,0.5)",
+              }}
+            >
+              <img
+                src={slide.src}
+                alt={slide.label}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+              <div style={{
+                position: "absolute", inset: 0,
+                background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)",
+              }} />
+              {isActive && (
+                <div style={{
+                  position: "absolute", inset: 0, borderRadius: "16px",
+                  boxShadow: "inset 0 0 0 1px rgba(57,255,20,0.25)",
+                  pointerEvents: "none",
+                }} />
+              )}
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    style={{ position: "absolute", bottom: "18px", left: "18px", zIndex: 2 }}
+                  >
+                    <p style={{ fontFamily: "var(--font-display, sans-serif)", fontSize: "18px", fontWeight: 600, color: "#fff", letterSpacing: "0.08em", textTransform: "uppercase", textShadow: "0 0 20px rgba(57,255,20,0.4)", margin: 0 }}>
+                      {slide.label}
+                    </p>
+                    <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "3px" }}>
+                      {slide.sub}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 flex gap-2 items-center">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Slide ${i + 1}`}
+            className="h-1 rounded-full transition-all duration-500"
+            style={{
+              width: i === current ? "2.5rem" : "0.5rem",
+              background: i === current ? "#39FF14" : "rgba(255,255,255,0.35)",
+              boxShadow: i === current ? "0 0 8px #39FF14" : "none",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Arrow buttons */}
+      <button
+        onClick={goPrev}
+        aria-label="Previous slide"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+        style={{
+          width: "40px", height: "40px", borderRadius: "50%",
+          border: "1px solid rgba(57,255,20,0.25)",
+          background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
+          color: "rgba(255,255,255,0.8)", fontSize: "18px", cursor: "pointer",
+        }}
+      >
+        ‹
+      </button>
+      <button
+        onClick={goNext}
+        aria-label="Next slide"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+        style={{
+          width: "40px", height: "40px", borderRadius: "50%",
+          border: "1px solid rgba(57,255,20,0.25)",
+          background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)",
+          color: "rgba(255,255,255,0.8)", fontSize: "18px", cursor: "pointer",
+        }}
+      >
+        ›
+      </button>
+    </div>
+  );
+}
+
+// ─── Home Page ─────────────────────────────────────────────────────────────
 function Home() {
   const { lang, tr } = useLang();
 
@@ -325,17 +540,17 @@ function Home() {
           transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}
           className="relative z-20 text-center px-6"
         >
-    <Link to="/" className="flex items-center select-none shrink-0">
-          <img
-            src={mintLogo}
-            alt="Mint Arena — Cocktails · Malia"
-            className="h-auto md:h-auto max-w-full"
-            style={{
-              filter:
-                "brightness(1.35) saturate(1.4) drop-shadow(0 0 10px rgba(57,255,20,0.55)) drop-shadow(0 0 22px rgba(57,255,20,0.3))",
-            }}
-          />
-        </Link>
+          <Link to="/" className="flex items-center select-none shrink-0 justify-center">
+            <img
+              src={mintLogo}
+              alt="Mint Arena — Cocktails · Malia"
+              className="h-auto md:h-auto max-w-full"
+              style={{
+                filter:
+                  "brightness(1.35) saturate(1.4) drop-shadow(0 0 10px rgba(57,255,20,0.55)) drop-shadow(0 0 22px rgba(57,255,20,0.3))",
+              }}
+            />
+          </Link>
           <p className="mt-6 italic text-lg md:text-2xl text-white/85 font-body">{tr("hero_tagline")}</p>
           <div className="mt-10 flex flex-wrap gap-4 justify-center">
             <Link to="/menu" className="btn-neon">{tr("hero_explore")}</Link>
@@ -364,6 +579,29 @@ function Home() {
 
       {/* GSAP FRAME ANIMATION */}
       <FrameAnimation />
+
+      {/* OUR GALLERY */}
+      <section className="py-24 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <p className="font-display text-xs tracking-[0.4em] text-mint uppercase mb-3">— the vibe</p>
+            <h2 className="font-display text-5xl md:text-7xl uppercase">
+              <span className="text-white">Our </span>
+              <span className="neon-mint">Gallery</span>
+            </h2>
+            <p className="mt-4 text-white/50 font-body text-sm tracking-widest uppercase">
+              A glimpse into the Mint Arena experience
+            </p>
+          </motion.div>
+
+          <ThreeDGallerySlider />
+        </div>
+      </section>
 
       {/* SIGNATURE SIPS */}
       <section className="py-24 px-6 border-t border-white/5">
