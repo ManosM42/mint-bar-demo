@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LanguageContext";
+import sliderIMG from "@/assets/slider-1.png";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({

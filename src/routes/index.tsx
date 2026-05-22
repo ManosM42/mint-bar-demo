@@ -273,7 +273,7 @@ function FrameAnimation() {
               style={{ fontSize: "clamp(3.5rem, 8vw, 8rem)", color: "#ffffff", textShadow: "0 0 40px rgba(57,255,20,0.25)" }}
             >
               SIGNA<br />
-              <span style={{ color: "#39FF14", textShadow: "0 0 30px #39FF14, 0 0 60px #39FF1466" }}>TURES</span>
+              <span style={{ color: "#39FF14", textShadow: "0 0 60px #39FF14, 0 0 120px #39FF1466" }}>TURES</span>
             </h2>
           </div>
 
