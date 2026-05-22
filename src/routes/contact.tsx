@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
+import sliderIMG from "@/assets/slider-1.jpg";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -18,17 +19,25 @@ function ContactPage() {
 
   return (
     <>
-      <section className="relative py-24 md:py-28 px-6 radial-night-strong text-center">
+      {/* HERO */}
+      <section className="relative py-28 md:py-36 px-6 text-center overflow-hidden">
+        <img src={sliderIMG} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/60" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at 50% 60%, #7B2FFF22 0%, #FF2D9B18 40%, transparent 70%)" }}
+        />
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="font-display text-6xl md:text-9xl uppercase"
+          className="relative z-10 font-display text-6xl md:text-9xl uppercase"
         >
           <span className="neon-mint pulse-mint">{tr("contact_heading")}</span>
         </motion.h1>
       </section>
 
+      {/* DETAILS + MAP */}
       <section className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
         {/* Details */}
         <motion.div
@@ -77,6 +86,7 @@ function ContactPage() {
         </motion.div>
       </section>
 
+      {/* QUOTE */}
       <section className="relative py-28 px-6 radial-night-strong mt-12 border-t border-white/5">
         <motion.p
           initial={{ opacity: 0, y: 20 }}

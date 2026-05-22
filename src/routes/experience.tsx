@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LanguageContext";
-import sliderIMG from "@/assets/slider-1.png";
+import sliderIMG from "@/assets/slider-1.jpg";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
@@ -24,12 +24,19 @@ function ExperiencePage() {
 
   return (
     <>
-      <section className="relative py-28 md:py-36 px-6 radial-night-strong text-center overflow-hidden">
+      {/* HERO */}
+      <section className="relative py-28 md:py-36 px-6 text-center overflow-hidden">
+        <img src={sliderIMG} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/60" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse at 50% 60%, #7B2FFF22 0%, #FF2D9B18 40%, transparent 70%)" }}
+        />
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
-          className="font-display text-5xl md:text-8xl uppercase leading-[0.9]"
+          className="relative z-10 font-display text-5xl md:text-8xl uppercase leading-[0.9]"
         >
           <span className="text-white">The </span>
           <span className="neon-mint pulse-mint">Mint Arena</span>
@@ -38,6 +45,7 @@ function ExperiencePage() {
         </motion.h1>
       </section>
 
+      {/* NUMBERED SECTIONS */}
       <div className="max-w-6xl mx-auto px-6 py-20 flex flex-col gap-24">
         {sections.map((s, i) => (
           <motion.div
@@ -74,6 +82,7 @@ function ExperiencePage() {
         ))}
       </div>
 
+      {/* CTA */}
       <section className="relative py-32 px-6 radial-night-strong text-center border-t border-white/5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

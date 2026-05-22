@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LanguageContext";
-import sliderIMG from "@/assets/slider-1.png";
+import sliderIMG from "@/assets/slider-1.jpg";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -76,7 +76,10 @@ function MenuPage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative py-24 md:py-32 px-6 radial-night-strong overflow-hidden">
+      <section className="relative py-24 md:py-32 px-6 overflow-hidden">
+  <img src={sliderIMG} alt="" className="absolute inset-0 w-full h-full object-cover" />
+  <div className="absolute inset-0 bg-black/60" />
+  <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 60%, #7B2FFF22 0%, #FF2D9B18 40%, transparent 70%)" }} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
