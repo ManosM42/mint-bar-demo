@@ -181,7 +181,7 @@ export function ReviewsSlider() {
               })}
             </div>
             <span className="font-display text-sm text-white/80 tracking-wider">
-              {rating} / 5 · {N} reviews
+              {rating} / 5 · 384 reviews
             </span>
           </div>
         </motion.div>
