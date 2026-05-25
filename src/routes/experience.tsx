@@ -41,7 +41,7 @@ function ExperiencePage() {
           <span className="text-white">The </span>
           <span className="neon-mint pulse-mint">Mint Arena</span>
           <br />
-          <span className="text-white">Experience</span>
+          <span className="btn-neon-pink">Experience</span>
         </motion.h1>
       </section>
 

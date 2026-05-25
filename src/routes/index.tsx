@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import mintLogo from "@/assets/mint-logo.png";
+import { ReviewsSlider } from "@/components/ReviewsSlider";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -633,6 +634,8 @@ function Home() {
           </div>
         </div>
       </section>
+      
+      <ReviewsSlider />
 
       {/* MAP */}
       <section className="py-24 px-6 border-t border-white/5">
