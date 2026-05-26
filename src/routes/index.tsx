@@ -566,7 +566,7 @@ function Home() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
           {[
             { num: "100+", label: tr("stat_cocktails") },
-            { num: "2018", label: tr("stat_since") },
+            { num: "2016", label: tr("stat_since") },
             { num: "#1", label: tr("stat_best") },
           ].map((s, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -634,7 +634,7 @@ function Home() {
           </div>
         </div>
       </section>
-      
+
       <ReviewsSlider />
 
       {/* MAP */}
