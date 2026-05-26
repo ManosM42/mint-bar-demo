@@ -19,7 +19,7 @@ export const t: Dict = {
 
   // about strip
   stat_cocktails: { en: "Cocktails", el: "Κοκτέιλ" },
-  stat_since: { en: "Open Since 2018", el: "Από το 2018" },
+  stat_since: { en: "Open Since 2016", el: "Από το 2016" },
   stat_best: { en: "Malia's #1 Bar", el: "Το No1 Bar στα Μάλια" },
 
   // signature
