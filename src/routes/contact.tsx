@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useLang } from "@/contexts/LanguageContext";
 import sliderIMG from "@/assets/slider-1.jpg";
+import slider2Img from "@/assets/slider-2.jpg";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -38,7 +39,15 @@ function ContactPage() {
       </section>
 
       {/* DETAILS + MAP */}
-      <section className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+<div
+  style={{
+    backgroundImage: `url(${slider2Img})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  <div style={{ backgroundColor: "rgba(0,0,0,0.78)", backdropFilter: "blur(2px)" }}>
+    <section className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
         {/* Details */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -96,7 +105,9 @@ function ContactPage() {
         >
           <span className="text-white/90">{tr("contact_quote")}</span>
         </motion.p>
-      </section>
+       </section>
+       </div>
+      </div>
     </>
   );
 }

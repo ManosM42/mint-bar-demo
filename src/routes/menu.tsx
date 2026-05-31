@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LanguageContext";
-import sliderIMG from "@/assets/slider-1.jpg";
+import slider1Img from "@/assets/slider-1.jpg";
+import slider3Img from "@/assets/slider-3.jpg";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -76,10 +77,15 @@ function MenuPage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative py-24 md:py-32 px-6 overflow-hidden">
-  <img src={sliderIMG} alt="" className="absolute inset-0 w-full h-full object-cover" />
-  <div className="absolute inset-0 bg-black/60" />
-  <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 60%, #7B2FFF22 0%, #FF2D9B18 40%, transparent 70%)" }} />
+      <section
+        className="relative flex h-[60vh] items-center justify-center px-6 text-center"
+        style={{
+          backgroundImage: `url(${slider1Img})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(0,0,0,0.55)" }} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -115,29 +121,39 @@ function MenuPage() {
       </div>
 
       {/* ITEMS */}
-      <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-          {activeItems.map((item, i) => (
-            <motion.div
-              key={`${active}-${i}`}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.04 }}
-              className="glow-box-mint-hover bg-[#0f0f0f] border border-white/10 rounded-md p-5 flex items-start justify-between gap-4"
-            >
-              <div className="min-w-0">
-                <h3 className="font-bold text-white text-lg">
-                  {lang === "en" ? item.en : item.el}
-                </h3>
-                <p className="text-white/50 text-sm mt-1">
-                  {lang === "en" ? item.desc_en : item.desc_el}
-                </p>
-              </div>
-              <div className="font-display text-2xl text-mint shrink-0">{item.price}</div>
-            </motion.div>
-          ))}
+      <div
+        style={{
+          backgroundImage: `url(${slider3Img})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div style={{ backgroundColor: "rgba(0,0,0,0.78)", backdropFilter: "blur(2px)" }}>
+          <section className="px-6 py-20">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeItems.map((item, i) => (
+                <motion.div
+                  key={`${active}-${i}`}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.04 }}
+                  className="glow-box-mint-hover bg-[#0f0f0f] border border-white/10 rounded-md p-5 flex items-start justify-between gap-4"
+                >
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-white text-lg">
+                      {lang === "en" ? item.en : item.el}
+                    </h3>
+                    <p className="text-white/50 text-sm mt-1">
+                      {lang === "en" ? item.desc_en : item.desc_el}
+                    </p>
+                  </div>
+                  <div className="font-display text-2xl text-mint shrink-0">{item.price}</div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </>
   );
 }

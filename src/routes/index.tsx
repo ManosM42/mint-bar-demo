@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import mintLogo from "@/assets/mint-logo.png";
 import { ReviewsSlider } from "@/components/ReviewsSlider";
+import bgSigs from "@/assets/slider-2.jpg";
+import bgExp from "@/assets/slider-1.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -605,7 +607,10 @@ function Home() {
       </section>
 
       {/* SIGNATURE SIPS */}
-      <section className="py-24 px-6 border-t border-white/5">
+      <section className="relative py-24 px-6 border-t border-white/5 overflow-hidden">
+  <div className="absolute inset-0" style={{ backgroundImage: `url(${bgSigs})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
+  <div className="absolute inset-0 bg-black/78 backdrop-blur-[2px]" />
+  <div className="relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} className="font-display text-5xl md:text-7xl text-center uppercase">
@@ -633,12 +638,16 @@ function Home() {
             </Link>
           </div>
         </div>
+        </div>
       </section>
 
       <ReviewsSlider />
 
       {/* MAP */}
-      <section className="py-24 px-6 border-t border-white/5">
+      <section className="relative py-24 px-6 border-t border-white/5 overflow-hidden">
+  <div className="absolute inset-0" style={{ backgroundImage: `url(${bgSigs})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
+  <div className="absolute inset-0 bg-black/78 backdrop-blur-[2px]" />
+  <div className="relative z-10">
         <div className="max-w-5xl mx-auto">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} className="font-display text-4xl md:text-6xl text-center uppercase text-white">
@@ -667,10 +676,13 @@ function Home() {
             </div>
           </div>
         </div>
+        </div>
       </section>
 
       {/* EXPERIENCE TEASER */}
-      <section className="relative py-32 px-6 overflow-hidden radial-night-strong border-t border-white/5">
+      <section className="relative py-32 px-6 overflow-hidden border-t border-white/5">
+  <div className="absolute inset-0" style={{ backgroundImage: `url(${bgExp})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
+  <div className="absolute inset-0 bg-black/82 backdrop-blur-[2px]" />
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} className="relative z-10 max-w-4xl mx-auto text-center">
           <h2 className="font-display text-5xl md:text-8xl uppercase">
@@ -683,5 +695,5 @@ function Home() {
         </motion.div>
       </section>
     </>
-  );
+   );
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useLang } from "@/contexts/LanguageContext";
 import sliderIMG from "@/assets/slider-1.jpg";
+import slider2Img from "@/assets/slider-2.jpg";
 
 export const Route = createFileRoute("/experience")({
   head: () => ({
@@ -46,7 +47,10 @@ function ExperiencePage() {
       </section>
 
       {/* NUMBERED SECTIONS */}
-      <div className="max-w-6xl mx-auto px-6 py-20 flex flex-col gap-24">
+      <div className="relative overflow-hidden">
+  <div className="absolute inset-0" style={{ backgroundImage: `url(${slider2Img})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
+  <div className="absolute inset-0 bg-black/78 backdrop-blur-[2px]" />
+  <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 flex flex-col gap-24">
         {sections.map((s, i) => (
           <motion.div
             key={i}
@@ -80,15 +84,18 @@ function ExperiencePage() {
             </div>
           </motion.div>
         ))}
+        </div>
       </div>
 
       {/* CTA */}
-      <section className="relative py-32 px-6 radial-night-strong text-center border-t border-white/5">
+      <section className="relative py-32 px-6 text-center border-t border-white/5 overflow-hidden">
+  <div className="absolute inset-0" style={{ backgroundImage: `url(${sliderIMG})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }} />
+  <div className="absolute inset-0 bg-black/82 backdrop-blur-[2px]" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-3xl mx-auto"
+          className="relative z-10 max-w-3xl mx-auto"
         >
           <h2 className="font-display text-4xl md:text-7xl uppercase">
             <span className="neon-mint">{tr("expp_cta")}</span>
