@@ -1,7 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-
-
+import { motion } from "framer-motion";
 
 const reviews = [
   {
@@ -62,7 +59,6 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-// Avatar initials circle
 function Avatar({ name }: { name: string }) {
   const initials = name
     .split(" ")
@@ -95,40 +91,12 @@ function Avatar({ name }: { name: string }) {
   );
 }
 
+const rating = 4.4;
+const fullStars = Math.floor(rating);
+const hasHalf = rating % 1 >= 0.5;
+
 export function ReviewsSlider() {
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const N = reviews.length;
-
-  const go = (next: number, dir: number) => {
-    setDirection(dir);
-    setCurrent((next + N) % N);
-  };
-
-  const startAuto = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setDirection(1);
-      setCurrent((i) => (i + 1) % N);
-    }, 4500);
-  };
-
-  useEffect(() => {
-    startAuto();
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, []);
-
-  const variants = {
-    enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
-    center: { opacity: 1, x: 0 },
-    exit: (d: number) => ({ opacity: 0, x: d > 0 ? -60 : 60 }),
-  };
-
-  // Google rating display
-  const rating = 4.4;
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating % 1 >= 0.5;
+  const doubled = [...reviews, ...reviews];
 
   return (
     <section className="py-24 px-6 border-t border-white/5">
@@ -151,7 +119,8 @@ export function ReviewsSlider() {
           </h2>
 
           {/* Google rating badge */}
-          <div className="mt-6 inline-flex items-center gap-3 px-5 py-2.5 rounded-full"
+          <div
+            className="mt-6 inline-flex items-center gap-3 px-5 py-2.5 rounded-full"
             style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(57,255,20,0.18)",
@@ -167,11 +136,10 @@ export function ReviewsSlider() {
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => {
                 const filled = i < fullStars;
-                const half = !filled && i === fullStars && hasHalf;
                 return (
                   <svg key={i} width="13" height="13" viewBox="0 0 24 24"
                     fill={filled ? "#39FF14" : "none"}
-                    stroke={filled || half ? "#39FF14" : "rgba(255,255,255,0.2)"}
+                    stroke={filled ? "#39FF14" : "rgba(255,255,255,0.2)"}
                     strokeWidth="1.5"
                     style={{ filter: filled ? "drop-shadow(0 0 3px #39FF14)" : "none" }}
                   >
@@ -186,113 +154,65 @@ export function ReviewsSlider() {
           </div>
         </motion.div>
 
-        {/* Card */}
-        <div className="relative" style={{ minHeight: 240 }}>
-          <AnimatePresence custom={direction} mode="wait">
-            <motion.div
-              key={current}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-              className="absolute inset-0"
-            >
+        {/* Infinite scroll strip */}
+        <div className="relative overflow-hidden">
+          {/* Fade edges */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+            style={{ background: "linear-gradient(to right, #080808, transparent)" }}
+          />
+          <div
+            className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+            style={{ background: "linear-gradient(to left, #080808, transparent)" }}
+          />
+
+          <motion.div
+            className="flex gap-6"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 35, ease: "linear", repeat: Infinity }}
+            style={{ width: "max-content" }}
+          >
+            {doubled.map((r, i) => (
               <div
-                className="h-full rounded-2xl p-8 md:p-10 flex flex-col justify-between"
+                key={i}
                 style={{
+                  width: 380,
+                  flexShrink: 0,
                   background: "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
                   border: "1px solid rgba(57,255,20,0.15)",
                   backdropFilter: "blur(20px)",
                   boxShadow: "0 0 40px rgba(57,255,20,0.05), 0 20px 60px rgba(0,0,0,0.4)",
+                  borderRadius: 16,
+                  padding: "2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
                 }}
               >
-                {/* Quote mark */}
                 <div
-                  className="font-display text-7xl leading-none mb-4 select-none"
+                  className="font-display text-6xl leading-none select-none"
                   style={{ color: "rgba(57,255,20,0.18)", lineHeight: 0.8 }}
                 >
                   "
                 </div>
-
-                <p className="font-body text-lg md:text-xl text-white/85 leading-relaxed flex-1">
-                  {reviews[current].text}
+                <p className="font-body text-base text-white/85 leading-relaxed flex-1">
+                  {r.text}
                 </p>
-
-                <div className="mt-8 flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center justify-between gap-4 mt-2">
                   <div className="flex items-center gap-3">
-                    <Avatar name={reviews[current].name} />
+                    <Avatar name={r.name} />
                     <div>
-                      <div className="font-display text-sm tracking-[0.12em] text-white uppercase">
-                        {reviews[current].name}
+                      <div className="font-display text-sm tracking-[0.1em] text-white uppercase">
+                        {r.name}
                       </div>
                       <div className="text-white/40 text-xs mt-0.5 tracking-wider">Google Review</div>
                     </div>
                   </div>
-                  <Stars count={reviews[current].stars} />
+                  <Stars count={r.stars} />
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Controls */}
-        <div className="mt-10 flex items-center justify-center gap-6">
-          <button
-            onClick={() => { go(current - 1, -1); startAuto(); }}
-            aria-label="Previous review"
-            className="flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-            style={{
-              width: 40, height: 40, borderRadius: "50%",
-              border: "1px solid rgba(57,255,20,0.25)",
-              background: "rgba(0,0,0,0.4)",
-              backdropFilter: "blur(8px)",
-              color: "rgba(255,255,255,0.7)",
-              fontSize: 20,
-              cursor: "pointer",
-            }}
-          >
-            ‹
-          </button>
-
-          {/* Dots */}
-          <div className="flex items-center gap-2">
-            {reviews.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => { go(i, i > current ? 1 : -1); startAuto(); }}
-                aria-label={`Review ${i + 1}`}
-                className="rounded-full transition-all duration-500"
-                style={{
-                  height: 4,
-                  width: i === current ? "2.5rem" : "0.5rem",
-                  background: i === current ? "#39FF14" : "rgba(255,255,255,0.25)",
-                  boxShadow: i === current ? "0 0 8px #39FF14" : "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                }}
-              />
             ))}
-          </div>
-
-          <button
-            onClick={() => { go(current + 1, 1); startAuto(); }}
-            aria-label="Next review"
-            className="flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
-            style={{
-              width: 40, height: 40, borderRadius: "50%",
-              border: "1px solid rgba(57,255,20,0.25)",
-              background: "rgba(0,0,0,0.4)",
-              backdropFilter: "blur(8px)",
-              color: "rgba(255,255,255,0.7)",
-              fontSize: 20,
-              cursor: "pointer",
-            }}
-          >
-            ›
-          </button>
+          </motion.div>
         </div>
 
       </div>
